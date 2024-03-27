@@ -1,8 +1,8 @@
 {
-	"id": "vitec-r9300",
-	"name": "vitec-r9300",
-	"shortname": "r9300",
-	"description": "Vitec/Exterity r9300 IPTV Endpoint",
+	"id": "vitec-93XX",
+	"name": "vitec-93XX",
+	"shortname": "AvediaPlayer 93XX",
+	"description": "Vitec/Exterity AvediaPlayer 93XX series IPTV Endpoint",
 	"version": "0.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/phillipivan/companion-module-vitec-r9300.git",
@@ -21,6 +21,6 @@
 	},
 	"legacyIds": [],
 	"manufacturer": "Vitec",
-	"products": ["r9300"],
-	"keywords": ["IPTV", "Digital Signage"]
+	"products": ["AvediaPlayer r9300", "AvediaPlayer r9310", "AvediaPlayer m9305", "AvediaPlayer m9325", "AvediaPlayer m9325 Wi-Fi"],
+	"keywords": ["IPTV", "Digital Signage", "Exterity"]
 }
