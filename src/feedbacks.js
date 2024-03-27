@@ -1,28 +1,27 @@
 const { combineRgb } = require('@companion-module/base')
+const { mode } = require('./choices')
 
 module.exports = async function (self) {
 	self.setFeedbackDefinitions({
-		ChannelState: {
-			name: 'Example Feedback',
+		currentMode: {
+			name: 'Device Mode',
 			type: 'boolean',
-			label: 'Channel State',
+			label: 'Current device mode.',
 			defaultStyle: {
 				bgcolor: combineRgb(255, 0, 0),
 				color: combineRgb(0, 0, 0),
 			},
 			options: [
 				{
-					id: 'num',
-					type: 'number',
-					label: 'Test',
-					default: 5,
-					min: 0,
-					max: 10,
+					id: 'mode',
+					type: 'dropdown',
+					label: 'Mode',
+					default: 'av',
+					choices: mode,
 				},
 			],
 			callback: (feedback) => {
-				console.log('Hello world!', feedback.options.num)
-				if (feedback.options.num > 5) {
+				if (feedback.options.mode === self.r9300.mode) {
 					return true
 				} else {
 					return false

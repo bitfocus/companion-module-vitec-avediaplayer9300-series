@@ -1,3 +1,3 @@
-## Your module
+## Vitec r9300
 
-Write some help for your users here!
+Control module for the r9300 IPTV Endpoint
