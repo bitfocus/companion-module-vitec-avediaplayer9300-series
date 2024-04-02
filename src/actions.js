@@ -15,24 +15,48 @@ module.exports = function (self) {
 					allowCustom: true,
 				},
 			],
-			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+			callback: async ({ options }) => {
+				if (self.axios === undefined) {
+					return undefined
+				}
+				try {
+					const response = await self.axios.post('', JSON.stringify({ params: { currentMode: options.mode } }))
+					self.logResponse(response)
+				} catch (error) {
+					self.logError(error)
+				}
+			},
+			subscribe: async () => {
+				self.getMode()
 			},
 		},
 		currentChannel: {
 			name: 'Change Channel URI',
 			options: [
 				{
-					id: 'num',
+					id: 'uri',
 					type: 'textinput',
 					label: 'URI',
 					default: '',
 					regex: Regex.SOMETHING,
 					useVariables: true,
+					tooltip: 'Should be formatted similar to: udp://239.192.65.2:5000?hwchan=1',
 				},
 			],
-			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+			callback: async ({ options }) => {
+				let uri = self.parseVariablesInString(options.uri)
+				if (self.axios === undefined || uri == undefined) {
+					return undefined
+				}
+				try {
+					const response = await self.axios.post('', JSON.stringify({ params: { currentChannel: uri } }))
+					self.logResponse(response)
+				} catch (error) {
+					self.logError(error)
+				}
+			},
+			subscribe: async () => {
+				self.getChannel()
 			},
 		},
 		volume: {
@@ -47,25 +71,131 @@ module.exports = function (self) {
 					max: 40,
 					range: true,
 					step: 1,
+					isVisible: (options) => {
+						return !options.useVar
+					},
+				},
+				{
+					id: 'volVar',
+					type: 'textinput',
+					default: '',
+					useVariables: true,
+					regex: Regex.SOMETHING,
+					isVisible: (options) => {
+						return options.useVar
+					},
+					tooltip: 'Variable should return an integer between 0 and 40',
+				},
+				{
+					id: 'useVar',
+					type: 'checkbox',
+					label: 'Use Variable',
+					default: false,
 				},
 			],
-			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+			callback: async ({ options }) => {
+				if (self.axios === undefined) {
+					return undefined
+				}
+				let vol = options.vol
+				if (options.useVar) {
+					vol = parseInt(self.parseVariablesInString(options.volVar))
+					if (isNaN(vol) || vol < 0 || vol > 40) {
+						self.log('warn', `an out of range variable has been passed to action.volume: ${vol}`)
+						return undefined
+					}
+					try {
+						const response = await self.axios.post('', JSON.stringify({ params: { volume: vol } }))
+						self.logResponse(response)
+					} catch (error) {
+						self.logError(error)
+					}
+				}
+			},
+			subscribe: async () => {
+				self.getVolume()
 			},
 		},
 		volumeUp: {
 			name: 'Volume Up',
 			options: [],
-			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+			callback: async () => {
+				if (self.axios === undefined) {
+					return undefined
+				}
+				try {
+					const response = await self.axios.post('', JSON.stringify({ params: { volumeup: 'volumeup' } }))
+					self.logResponse(response)
+				} catch (error) {
+					self.logError(error)
+				}
 			},
 		},
 		volumeDown: {
 			name: 'Volume Down',
 			options: [],
-			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+			callback: async () => {
+				if (self.axios === undefined) {
+					return undefined
+				}
+				try {
+					const response = await self.axios.post('', JSON.stringify({ params: { volumedown: 'volumedown' } }))
+					self.logResponse(response)
+				} catch (error) {
+					self.logError(error)
+				}
 			},
+		},
+		mute: {
+			name: 'Mute',
+			options: [
+				{
+					id: 'mute',
+					type: 'checkbox',
+					label: 'Mute',
+					default: false,
+				},
+			],
+			callback: async ({ options }) => {
+				if (self.axios === undefined) {
+					return undefined
+				}
+				try {
+					const response = await self.axios.post('', JSON.stringify({ params: { mute: options.mute } }))
+					self.logResponse(response)
+				} catch (error) {
+					self.logError(error)
+				}
+			},
+			subscribe: async () => {
+				self.getMute()
+			},
+		},
+		teletext: {
+			name: 'Teletext',
+			options: [
+				{
+					id: 'teletext',
+					type: 'checkbox',
+					label: 'Teletext',
+					default: false,
+				},
+			],
+			callback: async ({ options }) => {
+				if (self.axios === undefined) {
+					return undefined
+				}
+				try {
+					let msg = options.teletext ? 'on' : 'off'
+					const response = await self.axios.post('', JSON.stringify({ params: { teletext: msg } }))
+					self.logResponse(response)
+				} catch (error) {
+					self.logError(error)
+				}
+			},
+		},
+		subscribe: async () => {
+			self.getTeletext()
 		},
 	})
 }

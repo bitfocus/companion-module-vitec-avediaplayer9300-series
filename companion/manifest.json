@@ -6,7 +6,7 @@
 	"version": "0.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/phillipivan/companion-module-vitec-r9300.git",
-	"bugs": "https://github.com/bitfocus/companion-module-your-module-name/issues",
+	"bugs": "https://github.com/phillipivan/companion-module-vitec-r9300/issues",
 	"maintainers": [
 		{
 			"name": "Phillip Ivan Pietruschka",

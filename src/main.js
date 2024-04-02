@@ -4,7 +4,10 @@ const UpdateActions = require('./actions')
 const UpdateFeedbacks = require('./feedbacks')
 const UpdateVariableDefinitions = require('./variables')
 const config = require('./config.js')
+const util = require('./util')
 const axios = require('axios')
+const http = require('http')
+const https = require('https')
 
 const r9300port = 80
 const r9300apiPath = '/cgi-bin/json_xfer'
@@ -15,7 +18,7 @@ const pollInterval = 1000
 class r9300 extends InstanceBase {
 	constructor(internal) {
 		super(internal)
-		Object.assign(this, { ...config })
+		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
 	}
 
@@ -46,6 +49,11 @@ class r9300 extends InstanceBase {
 	}
 
 	pollStatus() {
+		this.getMode()
+		this.getChannel()
+		this.getVolume()
+		this.getMute()
+		this.getTeletext()
 		this.pollTimer = setTimeout(() => {
 			this.pollStatus()
 		}, pollInterval)
@@ -71,9 +79,16 @@ class r9300 extends InstanceBase {
 		}
 		if (this.config.host && this.config.user && this.config.pass) {
 			this.axios = axios.create({
-				baseURL: `http://${this.config.user}@${this.config.pass}:${this.config.host}:${r9300port}${r9300apiPath}`,
+				baseURL: `http://${this.config.host}:${r9300port}${r9300apiPath}`,
 				timeout: r9300timeOut,
 				headers: r9300headers,
+				auth: {
+					username: this.config.user,
+					password: this.config.pass,
+				},
+				insecureHTTPParser: true,
+				httpsAgent: new https.Agent({ rejectUnauthorized: false, keepAlive: true }),
+				httpAgent: new http.Agent({ keepAlive: true }),
 			})
 			this.pollStatus()
 		} else {
