@@ -4,7 +4,7 @@ const { mode } = require('./choices')
 module.exports = function (self) {
 	self.setActionDefinitions({
 		currentMode: {
-			name: 'Change Mode',
+			name: 'Mode',
 			options: [
 				{
 					id: 'mode',
@@ -32,7 +32,7 @@ module.exports = function (self) {
 			},
 		},
 		currentChannel: {
-			name: 'Change Channel URI',
+			name: 'Current Channel',
 			options: [
 				{
 					id: 'uri',
@@ -72,7 +72,7 @@ module.exports = function (self) {
 			},
 		},
 		volume: {
-			name: 'Change Volume',
+			name: 'Volume',
 			options: [
 				{
 					id: 'vol',

@@ -4,7 +4,7 @@ const { mode } = require('./choices')
 module.exports = async function (self) {
 	self.setFeedbackDefinitions({
 		currentMode: {
-			name: 'Device Mode',
+			name: 'Mode',
 			type: 'boolean',
 			label: 'Current device mode',
 			defaultStyle: {
