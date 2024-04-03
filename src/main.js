@@ -13,7 +13,7 @@ const r9300port = 80
 const r9300apiPath = '/cgi-bin/json_xfer'
 const r9300timeOut = 5000
 const r9300headers = { 'Content-Type': 'application/json' }
-const pollInterval = 5000
+const pollInterval = 2000
 
 class AvediaPlayer9300 extends InstanceBase {
 	constructor(internal) {
