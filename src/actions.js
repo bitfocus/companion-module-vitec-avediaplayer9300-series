@@ -111,22 +111,32 @@ module.exports = function (self) {
 				}
 				let vol = options.vol
 				if (options.useVar) {
-					vol = parseInt(self.parseVariablesInString(options.volVar))
+					vol = parseInt(await self.parseVariablesInString(options.volVar))
 					if (isNaN(vol) || vol < 0 || vol > 40) {
 						self.log('warn', `an out of range variable has been passed to action.volume: ${vol}`)
 						return undefined
 					}
-					try {
-						const response = await self.axios.post('', JSON.stringify({ params: { volume: vol } }))
-						self.logResponse(response)
-						self.getVolume()
-					} catch (error) {
-						self.logError(error)
-					}
+				}
+				try {
+					const response = await self.axios.post('', JSON.stringify({ params: { volume: vol } }))
+					self.logResponse(response)
+					self.getVolume()
+				} catch (error) {
+					self.logError(error)
 				}
 			},
 			subscribe: async () => {
 				self.getVolume()
+			},
+			learn: async (action) => {
+				const newVol = await self.getVolume()
+				if (newVol === undefined) {
+					return undefined
+				}
+				return {
+					...action.options,
+					vol: newVol,
+				}
 			},
 		},
 		volumeUp: {
