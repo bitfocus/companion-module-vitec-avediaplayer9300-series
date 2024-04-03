@@ -22,6 +22,7 @@ module.exports = function (self) {
 				try {
 					const response = await self.axios.post('', JSON.stringify({ params: { currentMode: options.mode } }))
 					self.logResponse(response)
+					self.getMode()
 				} catch (error) {
 					self.logError(error)
 				}
@@ -44,19 +45,30 @@ module.exports = function (self) {
 				},
 			],
 			callback: async ({ options }) => {
-				let uri = self.parseVariablesInString(options.uri)
-				if (self.axios === undefined || uri == undefined) {
+				let uri = await self.parseVariablesInString(options.uri)
+				if (self.axios === undefined || uri === undefined) {
 					return undefined
 				}
 				try {
 					const response = await self.axios.post('', JSON.stringify({ params: { currentChannel: uri } }))
 					self.logResponse(response)
+					self.getChannel()
 				} catch (error) {
 					self.logError(error)
 				}
 			},
 			subscribe: async () => {
 				self.getChannel()
+			},
+			learn: async (action) => {
+				const newChannel = await self.getChannel()
+				if (newChannel === undefined) {
+					return undefined
+				}
+				return {
+					...action.options,
+					uri: newChannel,
+				}
 			},
 		},
 		volume: {
@@ -107,6 +119,7 @@ module.exports = function (self) {
 					try {
 						const response = await self.axios.post('', JSON.stringify({ params: { volume: vol } }))
 						self.logResponse(response)
+						self.getVolume()
 					} catch (error) {
 						self.logError(error)
 					}
@@ -141,6 +154,7 @@ module.exports = function (self) {
 				try {
 					const response = await self.axios.post('', JSON.stringify({ params: { volumedown: 'volumedown' } }))
 					self.logResponse(response)
+					self.getVolume()
 				} catch (error) {
 					self.logError(error)
 				}
@@ -163,6 +177,7 @@ module.exports = function (self) {
 				try {
 					const response = await self.axios.post('', JSON.stringify({ params: { mute: options.mute } }))
 					self.logResponse(response)
+					self.getMute()
 				} catch (error) {
 					self.logError(error)
 				}
@@ -189,13 +204,14 @@ module.exports = function (self) {
 					let msg = options.teletext ? 'on' : 'off'
 					const response = await self.axios.post('', JSON.stringify({ params: { teletext: msg } }))
 					self.logResponse(response)
+					self.getTeletext()
 				} catch (error) {
 					self.logError(error)
 				}
 			},
-		},
-		subscribe: async () => {
-			self.getTeletext()
+			subscribe: async () => {
+				self.getTeletext()
+			},
 		},
 	})
 }

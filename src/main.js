@@ -13,9 +13,9 @@ const r9300port = 80
 const r9300apiPath = '/cgi-bin/json_xfer'
 const r9300timeOut = 5000
 const r9300headers = { 'Content-Type': 'application/json' }
-const pollInterval = 1000
+const pollInterval = 5000
 
-class r9300 extends InstanceBase {
+class AvediaPlayer9300 extends InstanceBase {
 	constructor(internal) {
 		super(internal)
 		Object.assign(this, { ...config, ...util })
@@ -67,6 +67,8 @@ class r9300 extends InstanceBase {
 			mode: 'unknown',
 			uri: 'unknown',
 			volume: 'unknown',
+			mute: 'unknown',
+			teletext: 'unknown',
 		}
 	}
 
@@ -139,4 +141,4 @@ class r9300 extends InstanceBase {
 	}
 }
 
-runEntrypoint(r9300, UpgradeScripts)
+runEntrypoint(AvediaPlayer9300, UpgradeScripts)
