@@ -1,6 +1,6 @@
-## Vitec AvediaPlayer 93XX
+## Vitec AvediaPlayer 9300 series
 
-Control module for the AvediaPlayer 93XX series IPTV Endpoints
+Control module for the AvediaPlayer 9300 series IPTV Endpoints
 
 The endpoint must have HTTPS Upgrade disabled under the services tab.
 
