@@ -102,4 +102,45 @@ module.exports = {
 			return undefined
 		}
 	},
+	async getChannelList() {
+		if (this.axios === undefined) {
+			return undefined
+		}
+		try {
+			let channelList = []
+			let varList = []
+			let channelArray = []
+			const response = await this.axios.get('?channels=true')
+			this.logResponse(response)
+			if (response.data.channels === undefined) {
+				this.log('warn', 'getChannelList response contains no data')
+				return undefined
+			}
+			if (Array.isArray(response.data.channels) === false) {
+				this.log('warn', `getChannelList response contains unexpected data format ${response.data.channels.toString()}`)
+				return undefined
+			}
+			console.log(response.data.channels)
+			channelList = response.data.channels
+			this.r9300.channelList = []
+			channelList.forEach((channel) => {
+				channelArray[channel[1]] = channel
+				if (channel[3] === this.r9300.uri) {
+					this.r9300.channelName = channel[2]
+					this.r9300.channelNumber = channel[1]
+					varList['currentChannelName'] = this.r9300.channelName
+					varList['currentChannelNumber'] = this.r9300.channelNumber
+					this.setVariableValues(varList)
+				}
+			})
+			channelArray.forEach((channel) => {
+				this.r9300.channelList.push({ id: channel[3], label: `${channel[1]}: ${channel[2]} (${channel[4]})` })
+			})
+			this.updateActions()
+			this.updateFeedbacks()
+		} catch (error) {
+			this.logError(error)
+			return undefined
+		}
+	},
 }

@@ -36,11 +36,13 @@ module.exports = function (self) {
 			options: [
 				{
 					id: 'uri',
-					type: 'textinput',
+					type: 'dropdown',
 					label: 'URI',
+					choices: self.r9300.channelList,
 					default: '',
 					regex: Regex.SOMETHING,
 					useVariables: true,
+					allowCustom: true,
 					tooltip: 'Should be formatted similar to: udp://239.192.65.2:5000?hwchan=1',
 				},
 			],

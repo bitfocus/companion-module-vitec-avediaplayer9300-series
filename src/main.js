@@ -54,6 +54,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		this.getVolume()
 		this.getMute()
 		this.getTeletext()
+		this.getChannelList()
 		this.pollTimer = setTimeout(() => {
 			this.pollStatus()
 		}, pollInterval)
@@ -69,6 +70,9 @@ class AvediaPlayer9300 extends InstanceBase {
 			volume: 'unknown',
 			mute: 'unknown',
 			teletext: 'unknown',
+			channelList: [],
+			channelName: 'unknown',
+			channelNumber: 'unknown',
 		}
 	}
 
@@ -107,6 +111,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
 		this.updateVariableDefinitions() // export variable definitions
+		this.getChannelList()
 	}
 	// When module gets deleted
 	async destroy() {
@@ -126,6 +131,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		this.config = config
 		this.initR9300()
 		this.setupAxios()
+		this.getChannelList()
 	}
 
 	updateActions() {
