@@ -111,7 +111,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
 		this.updateVariableDefinitions() // export variable definitions
-		this.getChannelList()
+		this.updateChannelList()
 	}
 	// When module gets deleted
 	async destroy() {
@@ -131,7 +131,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		this.config = config
 		this.initR9300()
 		this.setupAxios()
-		this.getChannelList()
+		this.updateChannelList()
 	}
 
 	updateActions() {

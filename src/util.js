@@ -108,8 +108,8 @@ module.exports = {
 		}
 		try {
 			let channelList = []
-			let varList = []
 			let channelArray = []
+			let newChannelList = []
 			const response = await this.axios.get('?channels=true')
 			this.logResponse(response)
 			if (response.data.channels === undefined) {
@@ -120,12 +120,17 @@ module.exports = {
 				this.log('warn', `getChannelList response contains unexpected data format ${response.data.channels.toString()}`)
 				return undefined
 			}
-			console.log(response.data.channels)
 			channelList = response.data.channels
-			this.r9300.channelList = []
 			channelList.forEach((channel) => {
 				channelArray[channel[1]] = channel
-				if (channel[3] === this.r9300.uri) {
+				if (
+					channel[3] === this.r9300.uri &&
+					(this.r9300.channelName !== channel[2] || this.r9300.channelNumber !== channel[1])
+				) {
+					let varList = []
+					if (this.config.verbose) {
+						this.log('debug', `Updating Channel Name: ${channel[2]} and Number: ${channel[1]} variables`)
+					}
 					this.r9300.channelName = channel[2]
 					this.r9300.channelNumber = channel[1]
 					varList['currentChannelName'] = this.r9300.channelName
@@ -134,13 +139,26 @@ module.exports = {
 				}
 			})
 			channelArray.forEach((channel) => {
-				this.r9300.channelList.push({ id: channel[3], label: `${channel[1]}: ${channel[2]} (${channel[4]})` })
+				newChannelList.push({ id: channel[3], label: `${channel[1]}: ${channel[2]} (${channel[4]})` })
 			})
-			this.updateActions()
-			this.updateFeedbacks()
+			return newChannelList
 		} catch (error) {
 			this.logError(error)
 			return undefined
 		}
+	},
+
+	async updateChannelList() {
+		let channelList = await this.getChannelList()
+		if (channelList === undefined) {
+			this.log('warn', 'No Channel List Available')
+			return undefined
+		}
+		if (this.config.verbose) {
+			this.log('debug', `Updating channel list for actions & feedbacks`)
+		}
+		this.r9300.channelList = channelList
+		this.updateActions()
+		this.updateFeedbacks()
 	},
 }

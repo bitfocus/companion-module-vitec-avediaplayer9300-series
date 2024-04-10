@@ -225,5 +225,15 @@ module.exports = function (self) {
 				self.getTeletext()
 			},
 		},
+		channelList: {
+			name: 'Channel List',
+			options: [],
+			callback: async () => {
+				self.updateChannelList()
+			},
+			subscribe: async () => {
+				self.updateChannelList()
+			},
+		},
 	})
 }

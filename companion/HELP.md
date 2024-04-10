@@ -6,6 +6,7 @@ The endpoint must have HTTPS Upgrade disabled under the services tab.
 
 ## Actions
 - **Current Channel URI**
+- **Get Channel List**
 - **Mode**
 - **Mute**
 - **Teletext**
