@@ -3,6 +3,7 @@ const UpgradeScripts = require('./upgrades')
 const UpdateActions = require('./actions')
 const UpdateFeedbacks = require('./feedbacks')
 const UpdateVariableDefinitions = require('./variables')
+const UpdatePresetsDefinitions = require('./presets')
 const config = require('./config.js')
 const util = require('./util')
 const axios = require('axios')
@@ -144,6 +145,10 @@ class AvediaPlayer9300 extends InstanceBase {
 
 	updateVariableDefinitions() {
 		UpdateVariableDefinitions(this)
+	}
+
+	updatePresetsDefinitions() {
+		UpdatePresetsDefinitions(this)
 	}
 }
 

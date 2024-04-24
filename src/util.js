@@ -160,5 +160,6 @@ module.exports = {
 		this.r9300.channelList = channelList
 		this.updateActions()
 		this.updateFeedbacks()
+		this.updatePresetsDefinitions()
 	},
 }
