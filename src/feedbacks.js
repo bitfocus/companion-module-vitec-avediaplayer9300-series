@@ -1,7 +1,7 @@
-const { combineRgb, Regex } = require('@companion-module/base')
-const { mode } = require('./choices')
+import { combineRgb, Regex } from '@companion-module/base'
+import { mode } from './choices.js'
 
-module.exports = async function (self) {
+export default async function (self) {
 	self.setFeedbackDefinitions({
 		currentMode: {
 			name: 'Mode',
