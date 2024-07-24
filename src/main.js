@@ -1,14 +1,14 @@
-const { InstanceBase, runEntrypoint, InstanceStatus } = require('@companion-module/base')
-const UpgradeScripts = require('./upgrades')
-const UpdateActions = require('./actions')
-const UpdateFeedbacks = require('./feedbacks')
-const UpdateVariableDefinitions = require('./variables')
-const UpdatePresetsDefinitions = require('./presets')
-const config = require('./config.js')
-const util = require('./util')
-const axios = require('axios')
-const http = require('http')
-const https = require('https')
+import { InstanceBase, runEntrypoint, InstanceStatus } from '@companion-module/base'
+import { UpgradeScripts } from './upgrades.js'
+import UpdateActions from './actions.js'
+import UpdateFeedbacks from './feedbacks.js'
+import UpdateVariableDefinitions from './variables.js'
+import UpdatePresetsDefinitions from './presets.js'
+import * as config from './config.js'
+import * as util from './util.js'
+import axios from 'axios'
+import http from 'http'
+import https from 'https'
 
 const r9300port = 80
 const r9300apiPath = '/cgi-bin/json_xfer'
@@ -29,7 +29,9 @@ class AvediaPlayer9300 extends InstanceBase {
 		}
 		if (response.data !== undefined) {
 			this.updateStatus(InstanceStatus.Ok)
-			this.log('info', `Data Recieved: ${JSON.stringify(response.data)}`)
+			if (this.config.verbose) {
+				this.log('debug', `Data Recieved: ${JSON.stringify(response.data)}`)
+			}
 		} else {
 			this.updateStatus(InstanceStatus.UnknownWarning, 'No Data')
 			this.log('warn', `Response contains no data`)

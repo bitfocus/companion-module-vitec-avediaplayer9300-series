@@ -1,7 +1,7 @@
-const { Regex } = require('@companion-module/base')
-const { mode } = require('./choices')
+import { Regex } from '@companion-module/base'
+import { mode } from './choices.js'
 
-module.exports = function (self) {
+export default async function (self) {
 	self.setActionDefinitions({
 		currentMode: {
 			name: 'Mode',
