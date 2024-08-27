@@ -48,7 +48,18 @@ class AvediaPlayer9300 extends InstanceBase {
 					'error',
 					`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`
 				)
-				this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+				if (error.response.data.includes('401 Unauthorized')) {
+					this.updateStatus(
+						InstanceStatus.AuthenticationFailure,
+						`${error.response.status}: ${JSON.stringify(error.code)}`
+					)
+					if (this.pollTimer) {
+						clearTimeout(this.pollTimer)
+						delete this.pollTimer
+					}
+				} else {
+					this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+				}
 			} catch {
 				this.log('error', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
 				this.updateStatus(InstanceStatus.ConnectionFailure, `${JSON.stringify(error.code)}`)
