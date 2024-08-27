@@ -21,6 +21,12 @@
 	},
 	"legacyIds": [],
 	"manufacturer": "Vitec",
-	"products": ["AvediaPlayer r9300", "AvediaPlayer r9310", "AvediaPlayer m9305", "AvediaPlayer m9325", "AvediaPlayer m9325 Wi-Fi"],
+	"products": [
+		"AvediaPlayer r9300",
+		"AvediaPlayer r9310",
+		"AvediaPlayer m9305",
+		"AvediaPlayer m9325",
+		"AvediaPlayer m9325 Wi-Fi"
+	],
 	"keywords": ["IPTV", "Digital Signage", "Exterity"]
 }
