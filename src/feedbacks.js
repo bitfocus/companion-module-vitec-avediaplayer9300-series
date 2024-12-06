@@ -34,7 +34,12 @@ export default async function (self) {
 				}
 			},
 			subscribe: async () => {
-				self.getMode()
+				self.queue.add(
+					async () => {
+						await self.getMode()
+					},
+					{ priority: 0 }
+				)
 			},
 		},
 		mute: {
@@ -50,7 +55,12 @@ export default async function (self) {
 				return self.r9300.mute
 			},
 			subscribe: async () => {
-				self.getMute()
+				self.queue.add(
+					async () => {
+						await self.getMute()
+					},
+					{ priority: 0 }
+				)
 			},
 		},
 		teletext: {
@@ -66,7 +76,12 @@ export default async function (self) {
 				return self.r9300.teletext
 			},
 			subscribe: async () => {
-				self.getTeletext()
+				self.queue.add(
+					async () => {
+						await self.getTeletext()
+					},
+					{ priority: 0 }
+				)
 			},
 		},
 		currentChannel: {
@@ -105,7 +120,12 @@ export default async function (self) {
 				}
 			},
 			subscribe: async () => {
-				self.getChannel()
+				self.queue.add(
+					async () => {
+						await self.getChannel()
+					},
+					{ priority: 0 }
+				)
 			},
 		},
 	})
