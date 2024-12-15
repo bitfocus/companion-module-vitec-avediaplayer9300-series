@@ -9,6 +9,7 @@ import * as util from './util.js'
 import axios from 'axios'
 import http from 'http'
 import https from 'https'
+import PQueue from 'p-queue'
 
 const r9300port = 80
 const r9300apiPath = '/cgi-bin/json_xfer'
@@ -21,6 +22,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		super(internal)
 		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
+		this.queue = new PQueue({ concurrency: 1, interval: 100, intervalCap: 1 })
 	}
 
 	logResponse(response) {
@@ -44,10 +46,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		}
 		if (error.code !== undefined) {
 			try {
-				this.log(
-					'error',
-					`${error.response.status}: ${JSON.stringify(error.code)}\n${JSON.stringify(error.response.data)}`
-				)
+				this.log('error', `${error.response.status}: ${JSON.stringify(error.code)}`)
 				if (error.response.data.includes('401 Unauthorized')) {
 					this.updateStatus(
 						InstanceStatus.AuthenticationFailure,
@@ -61,8 +60,8 @@ class AvediaPlayer9300 extends InstanceBase {
 					this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
 				}
 			} catch {
-				this.log('error', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
-				this.updateStatus(InstanceStatus.ConnectionFailure, `${JSON.stringify(error.code)}`)
+				this.log('warn', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
+				this.updateStatus(InstanceStatus.UnknownWarning, `${JSON.stringify(error.code)}`)
 			}
 		} else {
 			this.log('error', `No error code`)
@@ -71,12 +70,42 @@ class AvediaPlayer9300 extends InstanceBase {
 	}
 
 	pollStatus() {
-		this.getMode()
-		this.getChannel()
-		this.getVolume()
-		this.getMute()
-		this.getTeletext()
-		this.getChannelList()
+		this.queue.add(
+			async () => {
+				await this.getMode()
+			},
+			{ priority: 0 }
+		)
+		this.queue.add(
+			async () => {
+				await this.getChannel()
+			},
+			{ priority: 0 }
+		)
+		this.queue.add(
+			async () => {
+				await this.getVolume()
+			},
+			{ priority: 0 }
+		)
+		this.queue.add(
+			async () => {
+				await this.getMute()
+			},
+			{ priority: 0 }
+		)
+		this.queue.add(
+			async () => {
+				await this.getTeletext()
+			},
+			{ priority: 0 }
+		)
+		this.queue.add(
+			async () => {
+				await this.getChannelList()
+			},
+			{ priority: 0 }
+		)
 		this.pollTimer = setTimeout(() => {
 			this.pollStatus()
 		}, pollInterval)
@@ -105,6 +134,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		if (this.axios) {
 			delete this.axios
 		}
+		this.queue.clear()
 		if (this.config.host && this.config.user && this.config.pass) {
 			this.axios = axios.create({
 				baseURL: `http://${this.config.host}:${r9300port}${r9300apiPath}`,
@@ -145,6 +175,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		if (this.axios) {
 			delete this.axios
 		}
+		this.queue.clear()
 		delete this.r9300
 	}
 
