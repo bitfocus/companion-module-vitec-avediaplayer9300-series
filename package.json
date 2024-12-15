@@ -21,11 +21,11 @@
 	},
 	"devDependencies": {
 		"@companion-module/tools": "^2.1.0",
-		"eslint": "^9.16.0",
+		"eslint": "^9.17.0",
 		"prettier": "^3.4.2"
 	},
 	"engines": {
-		"node": "^22.11"
+		"node": "^22.12"
 	},
 	"prettier": "@companion-module/tools/.prettierrc.json",
 	"packageManager": "yarn@4.5.3"
