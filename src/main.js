@@ -50,7 +50,7 @@ class AvediaPlayer9300 extends InstanceBase {
 				if (error.response.data.includes('401 Unauthorized')) {
 					this.updateStatus(
 						InstanceStatus.AuthenticationFailure,
-						`${error.response.status}: ${JSON.stringify(error.code)}`
+						`${error.response.status}: ${JSON.stringify(error.code)}`,
 					)
 					if (this.pollTimer) {
 						clearTimeout(this.pollTimer)
@@ -70,42 +70,45 @@ class AvediaPlayer9300 extends InstanceBase {
 	}
 
 	pollStatus() {
-		this.queue.add(
-			async () => {
-				await this.getMode()
-			},
-			{ priority: 0 }
-		)
-		this.queue.add(
-			async () => {
-				await this.getChannel()
-			},
-			{ priority: 0 }
-		)
-		this.queue.add(
-			async () => {
-				await this.getVolume()
-			},
-			{ priority: 0 }
-		)
-		this.queue.add(
-			async () => {
-				await this.getMute()
-			},
-			{ priority: 0 }
-		)
-		this.queue.add(
-			async () => {
-				await this.getTeletext()
-			},
-			{ priority: 0 }
-		)
-		this.queue.add(
-			async () => {
-				await this.getChannelList()
-			},
-			{ priority: 0 }
-		)
+		if (this.queue.size < 10) {
+			this.queue.add(
+				async () => {
+					await this.getMode()
+				},
+				{ priority: 0 },
+			)
+			this.queue.add(
+				async () => {
+					await this.getChannel()
+				},
+				{ priority: 0 },
+			)
+			this.queue.add(
+				async () => {
+					await this.getVolume()
+				},
+				{ priority: 0 },
+			)
+			this.queue.add(
+				async () => {
+					await this.getMute()
+				},
+				{ priority: 0 },
+			)
+			this.queue.add(
+				async () => {
+					await this.getTeletext()
+				},
+				{ priority: 0 },
+			)
+			this.queue.add(
+				async () => {
+					await this.getChannelList()
+				},
+				{ priority: 0 },
+			)
+		}
+
 		this.pollTimer = setTimeout(() => {
 			this.pollStatus()
 		}, pollInterval)

@@ -19,7 +19,7 @@ export default async function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							const response = await self.axios.post('', JSON.stringify({ params: { currentMode: options.mode } }))
@@ -29,15 +29,15 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getMode()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
@@ -61,7 +61,7 @@ export default async function (self) {
 				if (self.axios === undefined || uri === undefined) {
 					return undefined
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							const response = await self.axios.post('', JSON.stringify({ params: { currentChannel: uri } }))
@@ -71,19 +71,24 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getChannel()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 			learn: async (action) => {
-				const newChannel = await self.getChannel()
+				const newChannel = await self.queue.add(
+					async () => {
+						return await self.getChannel()
+					},
+					{ priority: 1 },
+				)
 				if (newChannel === undefined) {
 					return undefined
 				}
@@ -139,7 +144,7 @@ export default async function (self) {
 						return undefined
 					}
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							const response = await self.axios.post('', JSON.stringify({ params: { volume: vol } }))
@@ -149,19 +154,24 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getVolume()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 			learn: async (action) => {
-				const newVol = await self.getVolume()
+				const newVol = await self.queue.add(
+					async () => {
+						return await self.getVolume()
+					},
+					{ priority: 1 },
+				)
 				if (newVol === undefined) {
 					return undefined
 				}
@@ -178,7 +188,7 @@ export default async function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							const response = await self.axios.post('', JSON.stringify({ params: { volumeup: 'volumeup' } }))
@@ -187,7 +197,7 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 		},
@@ -198,7 +208,7 @@ export default async function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							const response = await self.axios.post('', JSON.stringify({ params: { volumedown: 'volumedown' } }))
@@ -208,7 +218,7 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 		},
@@ -226,7 +236,7 @@ export default async function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							const response = await self.axios.post('', JSON.stringify({ params: { mute: options.mute } }))
@@ -236,15 +246,15 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getMute()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
@@ -262,7 +272,7 @@ export default async function (self) {
 				if (self.axios === undefined) {
 					return undefined
 				}
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						try {
 							let msg = options.teletext ? 'on' : 'off'
@@ -273,15 +283,15 @@ export default async function (self) {
 							self.logError(error)
 						}
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getTeletext()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
@@ -289,19 +299,19 @@ export default async function (self) {
 			name: 'Channel List',
 			options: [],
 			callback: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.updateChannelList()
 					},
-					{ priority: 1 }
+					{ priority: 1 },
 				)
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.updateChannelList()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},

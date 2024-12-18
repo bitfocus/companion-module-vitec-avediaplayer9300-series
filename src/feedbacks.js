@@ -24,7 +24,12 @@ export default async function (self) {
 				return feedback.options.mode === self.r9300.mode
 			},
 			learn: async (feedback) => {
-				const newMode = await self.getMode()
+				const newMode = await self.queue.add(
+					async () => {
+						return await self.getMode()
+					},
+					{ priority: 1 },
+				)
 				if (newMode === undefined) {
 					return undefined
 				}
@@ -34,11 +39,11 @@ export default async function (self) {
 				}
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getMode()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
@@ -55,11 +60,11 @@ export default async function (self) {
 				return self.r9300.mute
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getMute()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
@@ -76,11 +81,11 @@ export default async function (self) {
 				return self.r9300.teletext
 			},
 			subscribe: async () => {
-				self.queue.add(
+				await self.queue.add(
 					async () => {
 						await self.getTeletext()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
@@ -110,7 +115,12 @@ export default async function (self) {
 				return uri == self.r9300.uri
 			},
 			learn: async (feedback) => {
-				const newChannel = await self.getChannel()
+				const newChannel = await self.queue.add(
+					async () => {
+						return await self.getChannel()
+					},
+					{ priority: 1 },
+				)
 				if (newChannel === undefined) {
 					return undefined
 				}
@@ -124,7 +134,7 @@ export default async function (self) {
 					async () => {
 						await self.getChannel()
 					},
-					{ priority: 0 }
+					{ priority: 0 },
 				)
 			},
 		},
