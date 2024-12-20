@@ -23,6 +23,7 @@ class AvediaPlayer9300 extends InstanceBase {
 		Object.assign(this, { ...config, ...util })
 		this.pollTimer = {}
 		this.queue = new PQueue({ concurrency: 1, interval: 100, intervalCap: 1 })
+		this.currentStatus = { status: InstanceStatus.Disconnected, message: '' }
 	}
 
 	logResponse(response) {
@@ -30,14 +31,22 @@ class AvediaPlayer9300 extends InstanceBase {
 			console.log(response)
 		}
 		if (response.data !== undefined) {
-			this.updateStatus(InstanceStatus.Ok)
+			this.checkStatus(InstanceStatus.Ok)
 			if (this.config.verbose) {
 				this.log('debug', `Data Recieved: ${JSON.stringify(response.data)}`)
 			}
 		} else {
-			this.updateStatus(InstanceStatus.UnknownWarning, 'No Data')
+			this.checkStatus(InstanceStatus.UnknownWarning, 'No Data')
 			this.log('warn', `Response contains no data`)
 		}
+	}
+
+	checkStatus(status = InstanceStatus.Disconnected, message = '') {
+		if (status === this.currentStatus.status && message === this.currentStatus.message) return false
+		this.updateStatus(status, message.toString())
+		this.currentStatus.status = status
+		this.currentStatus.message = message
+		return true
 	}
 
 	logError(error) {
@@ -48,7 +57,7 @@ class AvediaPlayer9300 extends InstanceBase {
 			try {
 				this.log('error', `${error.response.status}: ${JSON.stringify(error.code)}`)
 				if (error.response.data.includes('401 Unauthorized')) {
-					this.updateStatus(
+					this.checkStatus(
 						InstanceStatus.AuthenticationFailure,
 						`${error.response.status}: ${JSON.stringify(error.code)}`,
 					)
@@ -57,15 +66,15 @@ class AvediaPlayer9300 extends InstanceBase {
 						delete this.pollTimer
 					}
 				} else {
-					this.updateStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
+					this.checkStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
 				}
 			} catch {
 				this.log('warn', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
-				this.updateStatus(InstanceStatus.UnknownWarning, `${JSON.stringify(error.code)}`)
+				this.checkStatus(InstanceStatus.UnknownWarning, `${JSON.stringify(error.code)}`)
 			}
 		} else {
 			this.log('error', `No error code`)
-			this.updateStatus(InstanceStatus.UnknownError)
+			this.checkStatus(InstanceStatus.UnknownError)
 		}
 	}
 
@@ -154,12 +163,12 @@ class AvediaPlayer9300 extends InstanceBase {
 			this.pollStatus()
 		} else {
 			this.log('warn', `Host undefined`)
-			this.updateStatus(InstanceStatus.BadConfig)
+			this.checkStatus(InstanceStatus.BadConfig)
 		}
 	}
 
 	async init(config) {
-		this.updateStatus(InstanceStatus.Connecting)
+		this.checkStatus(InstanceStatus.Connecting)
 		this.config = config
 		this.initR9300()
 		this.setupAxios()
@@ -183,7 +192,7 @@ class AvediaPlayer9300 extends InstanceBase {
 	}
 
 	async configUpdated(config) {
-		this.updateStatus(InstanceStatus.Connecting)
+		this.checkStatus(InstanceStatus.Connecting)
 		this.config = config
 		this.initR9300()
 		this.setupAxios()
