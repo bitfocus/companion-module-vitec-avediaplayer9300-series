@@ -1,6 +1,6 @@
 {
 	"name": "vitec-avediaplayer9300-series",
-	"version": "1.2.8",
+	"version": "1.2.9",
 	"main": "src/main.js",
 	"type": "module",
 	"scripts": {
@@ -20,7 +20,7 @@
 		"p-queue": "~8.1.0"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.1.1",
+		"@companion-module/tools": "^2.2.1",
 		"eslint": "^9.21.0",
 		"prettier": "^3.5.3"
 	},
