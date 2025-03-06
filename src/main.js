@@ -57,10 +57,7 @@ class AvediaPlayer9300 extends InstanceBase {
 			try {
 				this.log('error', `${error.response.status}: ${JSON.stringify(error.code)}`)
 				if (error.response.data.includes('401 Unauthorized')) {
-					this.checkStatus(
-						InstanceStatus.AuthenticationFailure,
-						`${error.response.status}: ${JSON.stringify(error.code)}`,
-					)
+					this.checkStatus(InstanceStatus.AuthenticationFailure, `${error.response.status}: ${error.code}`)
 					if (this.pollTimer) {
 						clearTimeout(this.pollTimer)
 						delete this.pollTimer
@@ -69,8 +66,8 @@ class AvediaPlayer9300 extends InstanceBase {
 					this.checkStatus(InstanceStatus.ConnectionFailure, `${error.response.status}: ${JSON.stringify(error.code)}`)
 				}
 			} catch {
-				this.log('warn', `${JSON.stringify(error.code)}\n${JSON.stringify(error)}`)
-				this.checkStatus(InstanceStatus.UnknownWarning, `${JSON.stringify(error.code)}`)
+				this.log('warn', `${error.code}: ${error.message}`)
+				this.checkStatus(InstanceStatus.UnknownWarning, `${error.code}`)
 			}
 		} else {
 			this.log('error', `No error code`)

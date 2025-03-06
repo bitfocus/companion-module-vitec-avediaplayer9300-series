@@ -51,13 +51,12 @@ export default async function (self) {
 					choices: self.r9300.channelList,
 					default: '',
 					regex: Regex.SOMETHING,
-					useVariables: true,
 					allowCustom: true,
 					tooltip: 'Should be formatted similar to: udp://239.192.65.2:5000?hwchan=1',
 				},
 			],
-			callback: async ({ options }) => {
-				let uri = await self.parseVariablesInString(options.uri)
+			callback: async ({ options }, context) => {
+				let uri = await context.parseVariablesInString(options.uri)
 				if (self.axios === undefined || uri === undefined) {
 					return undefined
 				}
@@ -118,7 +117,7 @@ export default async function (self) {
 					id: 'volVar',
 					type: 'textinput',
 					default: '',
-					useVariables: true,
+					useVariables: { local: true },
 					regex: Regex.SOMETHING,
 					isVisible: (options) => {
 						return options.useVar
@@ -132,13 +131,13 @@ export default async function (self) {
 					default: false,
 				},
 			],
-			callback: async ({ options }) => {
+			callback: async ({ options }, context) => {
 				if (self.axios === undefined) {
 					return undefined
 				}
 				let vol = options.vol
 				if (options.useVar) {
-					vol = parseInt(await self.parseVariablesInString(options.volVar))
+					vol = parseInt(await context.parseVariablesInString(options.volVar))
 					if (isNaN(vol) || vol < 0 || vol > 40) {
 						self.log('warn', `an out of range variable has been passed to action.volume: ${vol}`)
 						return undefined
